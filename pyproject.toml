@@ -1,0 +1,18 @@
+[project]
+name = "text2program-for-ehr"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "numpy==1.19.5",
+    "packaging<21.0",
+    "pandas>=1.3.3",
+    "pytorch-lightning==1.3.2",
+    "rdflib==5.0.0",
+    "scikit-learn>=1.3.2",
+    "sumeval>=0.2.2",
+    "torch==2.2",
+    "torchmetrics==0.2.0",
+    "transformers==4.5.1",
+]

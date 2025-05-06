@@ -1,4 +1,4 @@
-*.pyc
-*.csv
+aws/
+__MACOSX/
+*.zip
 *.ckpt
-/saved

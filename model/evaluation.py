@@ -51,7 +51,7 @@ class EvalForMimicProgram:
         self.interpreter = MimicInterpreter(self.kg_path, self.ops_path)
         
         f = open(f'{cur_dir}/data/cond_look_up.json', encoding='UTF-8')
-        self.tokenizer_look_up_json = eval(json.loads(f.read()))
+        self.tokenizer_look_up_json = json.loads(f.read())
 
         # For recover
         f = open(f'{cur_dir}/data/rel_obj_look_up.json', encoding='UTF-8')

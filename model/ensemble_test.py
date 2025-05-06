@@ -409,16 +409,14 @@ def ensemble_beam_search(
             model_inputs = model_list[0].prepare_inputs_for_generation(input_ids, **model_kwargs)
 
             for model_id in range(len(model_list)):
-                if model_id < 2:
-                    gpu_device = 'cuda:0'    
-                else:
-                    gpu_device = 'cuda:1'
-                for key in model_inputs.keys():
-                    if model_inputs[key] is not None:
-                        if key != 'past_key_values':
-                            model_inputs[key] = model_inputs[key].to(gpu_device)
-                        else:
-                            model_inputs[key] = None
+                device = next(model_list[model_id].parameters()).device  # model's home GPU
+                for key, value in model_inputs.items():
+                    if value is None:
+                        continue
+                    if key != 'past_key_values':
+                        model_inputs[key] = value.to(device)
+                    else:
+                        model_inputs[key] = None
                 outputs = model_list[model_id].model.model(
                     **model_inputs,
                     return_dict=True,

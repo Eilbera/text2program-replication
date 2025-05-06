@@ -36,6 +36,14 @@ logger = logging.getLogger(__name__)
 
 ''' finetune/decode '''
 class Text2TraceForTransformerModel(pl.LightningModule):
+
+    def transfer_batch_to_device(self, batch, device=None, dataloader_idx=0):
+        if device is None:
+            device = self.device
+        return {
+            k: (v.to(device) if isinstance(v, torch.Tensor) else v)
+            for k, v in batch.items()
+        }
     def __init__(self, model_args, training_args, data_args, tokenizer):
         super().__init__()
 

@@ -112,7 +112,7 @@ uv run scripts/dyn_ensemble.py --top-frac 0.33 --max-beam 7
 
 ---
 
-## 5  Reproduction experiments
+## 3  Reproduction experiments
 
 | Experiment                              | Command                                                | My results | Paper |
 |-----------------------------------------|--------------------------------------------------------|-----------|-------|
@@ -122,7 +122,7 @@ uv run scripts/dyn_ensemble.py --top-frac 0.33 --max-beam 7
 
 ---
 
-## 6  Extension — dynamic ensemble
+## 4  Extension — dynamic ensemble
 
 The original work runs a fixed 5‑model ensemble or 1 ensemble during inference. We adaptively scale the ensemble size  
 using **total uncertainty**:
@@ -136,7 +136,7 @@ Implementation in `scripts/dyn_ensemble.py`.
 
 ---
 
-## 7  Citation
+## 5  Citation
 
 ```text
 @misc{mansour2025repro,
@@ -149,7 +149,7 @@ Implementation in `scripts/dyn_ensemble.py`.
 
 ---
 
-## 8  License
+## 6  License
 
 MIMIC‑III data is subject to the PhysioNet Credentialed Health Data License and **must not** be redistributed.
 

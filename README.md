@@ -9,7 +9,7 @@ necessary to recreate our results and run the proposed **dynamic‑ensemble** ex
 ## 1  Quick start
 
 ```bash
-# 1 Clone the repo (submodule contains original authors’ code)
+# 1 Clone the repo 
 git clone --recursive https://github.com/<your‑handle>/text2program‑repro.git
 cd text2program‑repro
 
@@ -17,6 +17,35 @@ cd text2program‑repro
 pip install uv
 uv python pin 3.8
 uv init
+uv add transformers==4.5.1 numpy==1.19.5 pytorch-lightning==1.3.2 rdflib==5.0.0 pandas "packaging<21.0" sumeval torchmetrics==0.2.0 torch==2.2 scikit-learn
+
+# 2.5 ⚡ Apply compatibility patch to upstream code (PyTorch ≥2.x)
+
+sed -i '/^class Text2TraceForTransformerModel/a\
+\
+    def transfer_batch_to_device(self, batch, device=None, dataloader_idx=0):\
+        if device is None:\
+            device = self.device\
+        return {\
+            k: (v.to(device) if isinstance(v, torch.Tensor) else v)\
+            for k, v in batch.items()\
+        }' model/pl_model.py
+
+sed -i 's/eval(json.loads(f.read()))/json.loads(f.read())/' model/evaluation.py
+
+sed -i -E '
+/^[[:space:]]*for model_id in range$begin:math:text$len\\(model_list$end:math:text$\):/,/^[[:space:]]*model_inputs$begin:math:display$key$end:math:display$ = None/ c\
+            for model_id in range(len(model_list)):\
+                device = next(model_list[model_id].parameters()).device  # model'\''s home GPU\
+                for key, value in model_inputs.items():\
+                    if value is None:\
+                        continue\
+                    if key != '\''past_key_values'\'':\
+                        model_inputs[key] = value.to(device)\
+                    else:\
+                        model_inputs[key] = None
+' model/ensemble_test.py
+
 
 # 3 Install all runtime dependencies (CUDA 11.8 assumed)
 uv add \

@@ -11,6 +11,38 @@ This repository provides the official implementation of the [Uncertainty-Aware T
 - pytorch-lightning == 1.3.2
 - rdflib == 5.0.0
 
+## Setup
+git clone https://github.com/cyc1am3n/text2program-for-ehr.git
+cd text2program-for-ehr/
+
+### Changes made to initial code base
+sed -i '/^class Text2TraceForTransformerModel/a\
+\
+    def transfer_batch_to_device(self, batch, device=None, dataloader_idx=0):\
+        if device is None:\
+            device = self.device\
+        return {\
+            k: (v.to(device) if isinstance(v, torch.Tensor) else v)\
+            for k, v in batch.items()\
+        }' model/pl_model.py
+
+sed -i 's/eval(json.loads(f.read()))/json.loads(f.read())/' model/evaluation.py
+
+sed -i -E '
+/^[[:space:]]*for model_id in range\(len\(model_list\)\):/,/^[[:space:]]*model_inputs\[key\] = None/ c\
+            for model_id in range(len(model_list)):\
+                device = next(model_list[model_id].parameters()).device  # model'\''s home GPU\
+                for key, value in model_inputs.items():\
+                    if value is None:\
+                        continue\
+                    if key != '\''past_key_values'\'':\
+                        model_inputs[key] = value.to(device)\
+                    else:\
+                        model_inputs[key] = None
+' model/ensemble_test.py
+
+```
+
 ## Data
 ### Prepare Knowledge Graph
 You should build knowledge graph for MIMICSPARQL* following instruction in [official MIMICSPARQL* github](https://github.com/junwoopark92/mimic-sparql).  

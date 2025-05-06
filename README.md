@@ -10,7 +10,11 @@ necessary to recreate our results and run the proposed **dynamic‑ensemble** ex
 
 ```bash
 # 1 Clone the repo 
-git clone --recursive https://github.com/<your‑handle>/text2program‑repro.git
+git clone https://github.com/Eilbera/text2program-replication.git
+
+or main repo
+git clone https://github.com/cyc1am3n/text2program-for-ehr.git
+
 cd text2program‑repro
 
 # 2 Install UV and pinned Python 3.8 environment
@@ -75,7 +79,7 @@ uv run main.py ensemble --seeds 1 12 123 1234 42 --num-samples 1
 uv run scripts/dyn_ensemble.py --top-frac 0.33 --max-beam 7
 ```
 
-> **Hardware**   All experiments were performed on an **NVIDIA A100 SXM (ml.g5.8xlarge) with  
+> **Hardware**   All experiments were performed on an **NVIDIA A100 SXM. I also used AWS for pre process step: (ml.g5.8xlarge) with  
 > 64 vCPU and 500 GB RAM.  Training ➜ ≈ 5 h; KG build ➜ ≈ 2.3 h.
 
 ## 2  Data access & KG construction
@@ -104,7 +108,7 @@ uv run scripts/dyn_ensemble.py --top-frac 0.33 --max-beam 7
    ```
 
 > **Tip**   Building the KG locally requires ≈ 400 GB RAM. If your workstation cannot handle this,  
-> copy `mimic.db` to AWS S3 and launch an on‑demand **ml.g5.8xlarge** SageMaker notebook, as we did.
+> copy `mimic.db` to AWS S3 and launch an on‑demand **ml.g5.8xlarge** SageMaker notebook, as I did.
 
 ---
 
@@ -120,7 +124,7 @@ uv run scripts/dyn_ensemble.py --top-frac 0.33 --max-beam 7
 
 ## 6  Extension — dynamic ensemble
 
-The original work runs a fixed 5‑model ensemble during inference. We adaptively scale the ensemble size  
+The original work runs a fixed 5‑model ensemble or 1 ensemble during inference. We adaptively scale the ensemble size  
 using **total uncertainty**:
 
 1. Run ensemble‑1 to obtain token‑level entropy.  

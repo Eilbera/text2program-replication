@@ -43,6 +43,127 @@ uv run main.py ensemble --seeds 1 12 123 1234 42 --num-samples 1
 
 # 7 Run dynamic‑ensemble extension (adaptive beam)
 uv run scripts/dyn_ensemble.py --top-frac 0.33 --max-beam 7
+```
+
+> **Hardware**   All experiments were performed on an **NVIDIA A100 80GB × 2** node (ml.g5.8xlarge) with  
+> 64 vCPU and 500 GB RAM.  Training ➜ ≈ 5 h; KG build ➜ ≈ 2.3 h.
+
+---
+
+## 2  Directory layout
+
+```text
+.
+├── data/                  # ↳ raw MIMIC files + processed KG & lookup tables
+│   ├── mimic.db
+│   ├── mimic-sparqlstar.xml
+│   ├── rel_obj_lookup.json
+│   └── cond_lookup.json
+├── scripts/               # one‑off utilities (data prep, analysis, plots)
+│   ├── build_kg.py
+│   ├── dyn_ensemble.py
+│   └── plot_uncertainty.py
+├── src/                   # minimal wrapper around authors’ NLQ2Program code
+│   └── ...
+├── checkpoints/           # ✓ pre‑trained (paper) and √ reproduced weights
+│   └── ...
+├── notebooks/             # sanity‑check & exploratory notebooks
+└── README.md              # you are here
+```
+
+---
+
+## 3  Data access & KG construction
+
+1. **Request MIMIC‑III Clinical Database** credentials at <https://mimic.mit.edu>.  
+2. Download `mimic.db` (SQLite) and place it in `data/`.  
+3. Run **TREQS** pipeline to obtain the *schema‑aligned* version:
+
+   ```bash
+   git clone https://github.com/wangpinggl/TREQS
+   python TREQS/scripts/export_mimic_sqlite.py --src data/mimic.db --out data/mimic_sql/
+   ```
+
+4. Generate *SPARQL*‑ready KG:
+
+   ```bash
+   git clone https://github.com/junwoopark92/mimic-sparql
+   cd mimic-sparql && pip install -r requirements.txt
+   python build_mimic_kg.py --db data/mimic_sql/ --out ../data/mimic-sparqlstar.xml
+   ```
+
+5. Pre‑process KG into compact lookup tables used by NLQ2Program:
+
+   ```bash
+   uv run scripts/build_kg.py  # writes rel_obj_lookup.json & cond_lookup.json
+   ```
+
+> **Tip**   Building the KG locally requires ≈ 400 GB RAM. If your workstation cannot handle this,  
+> copy `mimic.db` to AWS S3 and launch an on‑demand **ml.g5.8xlarge** SageMaker notebook, as we did.
+
+---
+
+## 4  Reproduction experiments
+
+| Experiment                              | Command                                                | Our AccEX | Paper |
+|-----------------------------------------|--------------------------------------------------------|-----------|-------|
+| Single‑seed (seed 42)                   | `uv run main.py test`                                  | **0.947** | 0.948 |
+| 5‑seed ensemble (1 sample)              | `uv run main.py ensemble --num-samples 1`              | **0.982** | 0.982 |
+| 5‑seed ensemble (adaptive beam 5)       | `uv run main.py ensemble --num-samples 5`              | 0.984     | 0.985 |
+| Dynamic ensemble († top 33 % → beam 7)  | `uv run scripts/dyn_ensemble.py --top-frac 0.33`       | **0.986** |   —   |
+
+† *Our extension; see § 5.*
+
+---
+
+## 5  Extension — dynamic ensemble
+
+The original work runs a fixed 5‑model ensemble during inference. We adaptively scale the ensemble size  
+using **total uncertainty**:
+
+1. Run ensemble‑1 to obtain token‑level entropy.  
+2. Rank questions by mean entropy.  
+3. Re‑evaluate the top *K %* most uncertain with a larger beam (up to 7).
+
+This strategy improved AccEX from **0.9842 → 0.9863** under the same compute budget.  
+Implementation in `scripts/dyn_ensemble.py`.
+
+---
+
+## 6  Citation
+
+```text
+@misc{mansour2025repro,
+  author    = {Eilbera Mansour},
+  title     = {Reproducing “Uncertainty‑Aware Text‑to‑Program for Question Answering on Structured Electronic Health Records”},
+  year      = {2025},
+  url       = {https://github.com/<your‑handle>/text2program‑repro}
+}
+```
+
+---
+
+## 7  License
+
+Code in this repo is released under the **Apache 2.0** license.  
+MIMIC‑III data is subject to the PhysioNet Credentialed Health Data License and **must not** be redistributed.
+
+---
+
+## 8  Acknowledgements
+
+We thank the original authors for open‑sourcing their implementation and the MIT Lab for  
+Computational Physiology for maintaining the MIMIC databases.
+
+
+
+
+
+
+
+
+
+
 
 This repository provides the official implementation of the [Uncertainty-Aware Text-to-Program for Question Answering on Structured Electronic Health Records](https://arxiv.org/abs/2203.06918).
 

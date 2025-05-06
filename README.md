@@ -3,6 +3,7 @@
 This repository accompanies the **CS 598: Deep Learning for Healthcare** reproduction study and extension of  
 Kim *et al.* (AAAI 2022). It contains all code, data‑processing scripts, trained checkpoints, and instructions  
 necessary to recreate our results and run the proposed **dynamic‑ensemble** extension.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
@@ -11,11 +12,10 @@ necessary to recreate our results and run the proposed **dynamic‑ensemble** ex
 ```bash
 # 1 Clone the repo 
 git clone https://github.com/Eilbera/text2program-replication.git
-
-or main repo
+or original repo:
 git clone https://github.com/cyc1am3n/text2program-for-ehr.git
 
-cd text2program‑repro
+cd text2program
 
 # 2 Install UV and pinned Python 3.8 environment
 pip install uv

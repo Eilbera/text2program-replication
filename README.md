@@ -41,12 +41,31 @@ sed -i -E '
                         model_inputs[key] = None
 ' model/ensemble_test.py
 
-```
+
 
 ## Data
 ### Prepare Knowledge Graph
 You should build knowledge graph for MIMICSPARQL* following instruction in [official MIMICSPARQL* github](https://github.com/junwoopark92/mimic-sparql).  
 The KG(`mimic_sparqlstar_kg.xml`) file should be in `./data/db/mimicstar_kg` directory.
+
+#python dep to run main repo
+pip install uv
+uv python pin 3.8
+uv init
+uv add transformers==4.5.1 numpy==1.19.5 pytorch-lightning==1.3.2 rdflib==5.0.0 pandas "packaging<21.0" sumeval torchmetrics==0.2.0 torch==2.2 scikit-learn
+
+#preprocess step in main repo
+cd /workspace/text2program-for-ehr/data && uv run preprocess.py
+cd /workspace/text2program-for-ehr/
+
+#aws CLI - to get S3 info over checkpoint (trained models)
+apt update
+apt install -y unzip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+./aws/install
+mkdir -p ~/.aws
+
 
 ### Pre-process
 Generate dictionary files for the recovery technique.

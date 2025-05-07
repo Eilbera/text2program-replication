@@ -70,15 +70,20 @@ make build-kg
 # 5 Train and evaluate single‑seed model
 uv run main.py train  \
   --seed 42 --batch_size 18 --epochs 100 --lr 1e-4
-uv run main.py test
+uv run main.py --test
 
 # 6 Run 5‑seed ensemble (paper default)
-uv run main.py ensemble --seeds 1 12 123 1234 42 --num-samples 1
+To get uncertainty classification accuracy - uv run main.py ensemble --num-samples=1
 
-# 7 Run dynamic‑ensemble extension (adaptive beam)
-.............
+# 7 To get execution accuracy
+uv run main.py ensemble --num-samples=5
 
-#8 Reproduce ......
+# 8 To get Figure 3 from the original paper
+run this notebook in main directory: Main.ipynb
+
+# 9 To get the results from the extension
+    a. Go into test_time_scaling folder
+    b. Run Test Time Scaling Analysis.ipynb
 ```
 
 > **Hardware**   All experiments were performed on an **NVIDIA A100 SXM. I also used AWS for pre process step: (ml.g5.8xlarge) with  
@@ -95,35 +100,7 @@ uv run main.py ensemble --seeds 1 12 123 1234 42 --num-samples 1
    python TREQS/scripts/export_mimic_sqlite.py --src data/mimic.db --out data/mimic_sql/
    ```
 
-3. Generate *SPARQL*‑ready KG:
-
-   ```bash
-   git clone https://github.com/junwoopark92/mimic-sparql
-   cd mimic-sparql && pip install -r requirements.txt
-   python build_mimic_kg.py --db data/mimic_sql/ --out ../data/mimic-sparqlstar.xml
-   ```
-
-4. Pre‑process KG into compact lookup tables used by NLQ2Program:
-
-   ```bash
-   uv run scripts/build_kg.py  # writes rel_obj_lookup.json & cond_lookup.json
-   ```
-
-> **Tip**   Building the KG locally requires ≈ 400 GB RAM. If your workstation cannot handle this,  
-> copy `mimic.db` to AWS S3 and launch an on‑demand **ml.g5.8xlarge** SageMaker notebook, as I did.
-
----
-
-## 3  Reproduction experiments
-
-| Experiment                              | Command                                                | My results | Paper |
-|-----------------------------------------|--------------------------------------------------------|-----------|-------|
-| Single‑seed (seed 42)                   | `uv run main.py test`                                  | **0.948** | 0.947 |
-
-
----
-
-## 4  Extension — dynamic ensemble
+## 3 Extension — dynamic ensemble
 
 The original work runs a fixed 5‑model ensemble or 1 ensemble during inference. We adaptively scale the ensemble size  
 using **total uncertainty**:
@@ -133,10 +110,9 @@ using **total uncertainty**:
 3. Re‑evaluate the top *K %* most uncertain with a larger beam (up to 7).
 
 
-
 ---
 
-## 5  Citation
+## 4  Citation
 
 ```text
 @misc{mansour2025repro,
@@ -149,7 +125,7 @@ using **total uncertainty**:
 
 ---
 
-## 6  License
+## 5  License
 
 MIMIC‑III data is subject to the PhysioNet Credentialed Health Data License and **must not** be redistributed.
 

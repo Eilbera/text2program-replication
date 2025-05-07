@@ -117,7 +117,6 @@ uv run scripts/dyn_ensemble.py --top-frac 0.33 --max-beam 7
 | Experiment                              | Command                                                | My results | Paper |
 |-----------------------------------------|--------------------------------------------------------|-----------|-------|
 | Single‑seed (seed 42)                   | `uv run main.py test`                                  | **0.948** | 0.947 |
-| Dynamic ensemble († top 33 % → beam 7)  | `uv run scripts/dyn_ensemble.py --top-frac 0.33`       | **0.986** |   —   |
 
 
 ---
@@ -131,8 +130,7 @@ using **total uncertainty**:
 2. Rank questions by mean entropy.  
 3. Re‑evaluate the top *K %* most uncertain with a larger beam (up to 7).
 
-This strategy improved AccEX from **0.9842 → 0.9863** under the same compute budget.  
-Implementation in `scripts/dyn_ensemble.py`.
+
 
 ---
 

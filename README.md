@@ -1,4 +1,4 @@
-# Reproducing “Uncertainty‑Aware Text‑to‑Program for Question Answering on Structured Electronic Health Records”
+# “Uncertainty‑Aware Text‑to‑Program for Question Answering on Structured Electronic Health Records” Reproduction and Extension
 
 This repository accompanies the **CS 598: Deep Learning for Healthcare** reproduction study and extension of  
 Kim *et al.* (AAAI 2022). It contains all code, data‑processing scripts, trained checkpoints, and instructions  

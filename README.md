@@ -76,7 +76,9 @@ uv run main.py test
 uv run main.py ensemble --seeds 1 12 123 1234 42 --num-samples 1
 
 # 7 Run dynamic‑ensemble extension (adaptive beam)
-uv run scripts/dyn_ensemble.py --top-frac 0.33 --max-beam 7
+.............
+
+#8 Reproduce ......
 ```
 
 > **Hardware**   All experiments were performed on an **NVIDIA A100 SXM. I also used AWS for pre process step: (ml.g5.8xlarge) with  
